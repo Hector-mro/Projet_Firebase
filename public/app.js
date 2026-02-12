@@ -19,6 +19,28 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app); 
 
+// Convert Firebase auth errors to readable French messages
+function formatAuthError(error) {
+  if (!error || !error.code) return error?.message || "Une erreur est survenue.";
+
+  switch (error.code) {
+    
+    case "auth/email-already-in-use":
+      return "L'adresse e-mail est déjà utilisée.";
+    case "auth/invalid-email":
+      return "L'adresse e-mail est invalide.";
+    case "auth/weak-password":
+      return "Le mot de passe est trop faible. Il doit contenir au moins 6 caractères.";
+    case "auth/user-not-found":
+      return "Aucun utilisateur trouvé avec cette adresse e-mail.";
+    case "auth/wrong-password":
+      return "Mot de passe incorrect.";
+    case "auth/invalid-credential":
+      return "Identifiants invalides. Veuillez vérifier vos informations de connexion.";
+    default:
+      return error.message || "Une erreur inconnue est survenue.";
+  }
+}
 const registerForm = document.getElementById("register-form");
 const loginForm = document.getElementById("login-form");
 const logoutBtn = document.getElementById("logout-btn");
@@ -39,7 +61,7 @@ registerForm.addEventListener("submit", (e) => {
       console.log("Utilisateur créé :", userCredential.user);
     })
     .catch((error) => {
-      alert(error.message);
+      alert(formatAuthError(error));
     });
 });
 
@@ -54,14 +76,14 @@ loginForm.addEventListener("submit", (e) => {
       console.log("Utilisateur connecté :", userCredential.user);
     })
     .catch((error) => {
-      alert(error.message);
+      alert(formatAuthError(error));
     });
 });
 
 logoutBtn.addEventListener("click", () => {
   signOut(auth)
     .catch((error) => {
-      alert(error.message);
+      alert(formatAuthError(error));
     });
 });
 
