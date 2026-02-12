@@ -124,6 +124,7 @@ onSnapshot(q, (snapshot) => {
     div.innerHTML = `
       <strong>${message.userEmail}</strong>
       <p>${message.text}</p>
+      <small>${message.createdAt ? message.createdAt.toDate().toLocaleString() : "Just now"}</small>
       <hr>
     `;
 
